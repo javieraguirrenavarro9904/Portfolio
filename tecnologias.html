@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Tecnologías, herramientas e idiomas de Francisco Javier Aguirre Navarro."><meta name="theme-color" content="#151714">
-  <title>Tecnologías — Javier Aguirre</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/style.css"><script src="assets/js/site.js" defer></script>
+  <title>Tecnologías — Javier Aguirre</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="assets/css/style.css"><script type="module" src="assets/js/site.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -14,11 +14,58 @@
   <main id="contenido">
     <header class="page-heading"><div class="wrap"><p class="page-overline">TECNOLOGÍAS Y HABILIDADES</p><h1>Herramientas que voy usando y aprendiendo.</h1><p>Este es el stack que aparece en mi formación y experiencia. No todas las tecnologías tienen el mismo recorrido: algunas las he trabajado más y otras las sigo aprendiendo.</p></div></header>
     <section class="page-content wrap">
-      <div class="skills-layout">
-        <article class="skill-group"><p class="card-kicker">01 · INTERFAZ</p><h2>Frontend</h2><p>Para crear la parte de la web que las personas ven y utilizan.</p><div class="skill-list"><span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>React</span><span>Astro</span></div></article>
-        <article class="skill-group"><p class="card-kicker">02 · LÓGICA</p><h2>Backend</h2><p>Para desarrollar funcionalidades y conectar servicios.</p><div class="skill-list"><span>PHP</span><span>Laravel</span><span>Java</span><span>Node.js</span></div></article>
-        <article class="skill-group"><p class="card-kicker">03 · DATOS</p><h2>Bases de datos</h2><p>Consulta y gestión de información en distintos sistemas.</p><div class="skill-list"><span>SQL</span><span>MySQL</span><span>MariaDB</span><span>PostgreSQL</span><span>SQL Server</span></div></article>
-        <article class="skill-group"><p class="card-kicker">04 · HERRAMIENTAS Y DESPLIEGUE</p><h2>Entorno de trabajo</h2><p>Herramientas que utilizo en desarrollo, pruebas y publicación.</p><div class="skill-list"><span>Git</span><span>GitHub</span><span>VS Code</span><span>Docker</span><span>Postman</span><span>AWS</span><span>Vercel</span></div></article>
+      <div class="marquee-toolbar">
+        <p><span class="status-dot"></span> Explora mi stack en movimiento</p>
+        <button class="marquee-toggle" id="marquee-toggle" type="button" aria-pressed="false">
+          <span aria-hidden="true">Ⅱ</span> Pausar tiras
+        </button>
+      </div>
+      <div class="skills-layout" id="skills-layout">
+        <article class="skill-group">
+          <div class="skill-heading"><p class="card-kicker">01 · INTERFAZ</p><h2>Frontend</h2><p>Para crear la parte de la web que las personas ven y utilizan.</p></div>
+          <div class="skill-list skill-logo-list" role="group" aria-label="Tecnologías frontend"><div class="tech-track"><ul class="tech-set">
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="" aria-hidden="true"><span>HTML5</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="" aria-hidden="true"><span>CSS3</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="" aria-hidden="true"><span>JavaScript</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="" aria-hidden="true"><span>React</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg" alt="" aria-hidden="true"><span>Astro</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg" alt="" aria-hidden="true"><span>Angular</span></li>
+          </ul></div></div>
+        </article>
+        <article class="skill-group">
+          <div class="skill-heading"><p class="card-kicker">02 · LÓGICA</p><h2>Backend</h2><p>Para desarrollar funcionalidades y conectar servicios.</p></div>
+          <div class="skill-list skill-logo-list" role="group" aria-label="Tecnologías backend"><div class="tech-track"><ul class="tech-set">
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="" aria-hidden="true"><span>PHP</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg" alt="" aria-hidden="true"><span>Laravel</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="" aria-hidden="true"><span>Java</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="" aria-hidden="true"><span>Node.js</span></li>
+          </ul></div></div>
+        </article>
+        <article class="skill-group">
+          <div class="skill-heading"><p class="card-kicker">03 · DATOS</p><h2>Bases de datos</h2><p>Consulta y gestión de información en distintos sistemas.</p></div>
+          <div class="skill-list skill-logo-list" role="group" aria-label="Bases de datos"><div class="tech-track"><ul class="tech-set">
+            <li><img class="sql-icon" src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/svgs/solid/database.svg" alt="" aria-hidden="true"><span>SQL</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="" aria-hidden="true"><span>MySQL</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mariadb/mariadb-original.svg" alt="" aria-hidden="true"><span>MariaDB</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="" aria-hidden="true"><span>PostgreSQL</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoftsqlserver/microsoftsqlserver-original.svg" alt="" aria-hidden="true"><span>SQL Server</span></li>
+          </ul></div></div>
+        </article>
+        <article class="skill-group">
+          <div class="skill-heading"><p class="card-kicker">04 · HERRAMIENTAS Y DESPLIEGUE</p><h2>Entorno de trabajo</h2><p>Herramientas que utilizo en desarrollo, pruebas y publicación.</p></div>
+          <div class="skill-list skill-logo-list" role="group" aria-label="Herramientas y despliegue"><div class="tech-track"><ul class="tech-set">
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="" aria-hidden="true"><span>Git</span></li>
+            <li><img src="https://cdn.simpleicons.org/github/F0F6FC" alt="" aria-hidden="true"><span>GitHub</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" alt="" aria-hidden="true"><span>VS Code</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="" aria-hidden="true"><span>Docker</span></li>
+            <li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt="" aria-hidden="true"><span>Postman</span></li>
+            <li><img src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/svgs/brands/aws.svg" alt="" aria-hidden="true"><span>AWS</span></li>
+            <li><img src="https://cdn.simpleicons.org/vercel/F0F0F0" alt="" aria-hidden="true"><span>Vercel</span></li>
+          </ul></div></div>
+        </article>
+      </div>
+      <div id="react-stack-explorer">
+        <p class="react-fallback">Cargando explorador interactivo de tecnologías…</p>
       </div>
       <div class="content-grid section-top">
         <section><h2 class="section-title">Idiomas</h2><div class="simple-card"><div class="language-row"><span>Español</span><span>Nativo</span></div><div class="language-row"><span>Inglés</span><span>B2 · Aptis</span></div></div></section>
@@ -27,5 +74,6 @@
     </section>
   </main>
   <footer class="site-footer"><div class="wrap footer-inner"><span>© <span data-year></span> Francisco Javier Aguirre Navarro</span><a href="contacto.html">¿Hablamos? <span aria-hidden="true">→</span></a></div></footer>
+  <script type="module" src="src/react-showcase.jsx"></script>
 </body>
 </html>
