@@ -68,41 +68,106 @@ if (marqueeToggle && skillsLayout) {
   });
 }
 
-const marqueeStates = [...document.querySelectorAll('.tech-track')].map(track => ({
-  track,
-  viewport: track.parentElement,
-  originalItems: [...track.querySelector('.tech-set').children].map(item => item.cloneNode(true)),
-  width: -1
-}));
+const marqueeSpeed = 28;
+const marqueeStates = [...document.querySelectorAll('.tech-track')].map((track, index) => {
+  const viewport = track.parentElement;
+  const list = track.querySelector('.tech-set');
+  const state = {
+    track,
+    viewport,
+    list,
+    items: [...list.children],
+    widths: [],
+    viewportWidth: 0,
+    padding: 18,
+    gap: 0,
+    offset: 0,
+    direction: index % 2 === 0 ? -1 : 1,
+    hovered: false
+  };
+
+  viewport.addEventListener('pointerenter', () => { state.hovered = true; });
+  viewport.addEventListener('pointerleave', () => { state.hovered = false; });
+  return state;
+});
 
 const updateMarquees = () => {
   marqueeStates.forEach(state => {
     const viewportWidth = state.viewport.getBoundingClientRect().width;
-    if (!viewportWidth || Math.abs(state.width - viewportWidth) < 0.5) return;
+    if (!viewportWidth) return;
 
-    const original = document.createElement('ul');
-    original.className = 'tech-set';
-    original.append(...state.originalItems.map(item => item.cloneNode(true)));
-    state.track.replaceChildren(original);
+    state.viewportWidth = viewportWidth;
+    state.padding = parseFloat(getComputedStyle(state.list).paddingLeft) || 0;
+    state.widths = state.items.map(item => item.getBoundingClientRect().width);
+    const itemsWidth = state.widths.reduce((total, width) => total + width, 0);
+    const defaultGap = parseFloat(getComputedStyle(state.list).columnGap) || 0;
+    const largestItem = Math.max(...state.widths);
+    const minimumGap = state.items.length > 1
+      ? (viewportWidth + largestItem - itemsWidth - state.padding * 2) / (state.items.length - 1)
+      : defaultGap;
 
-    const contentWidth = original.getBoundingClientRect().width;
-    const travelDistance = Math.max(0, contentWidth - viewportWidth);
-    if (travelDistance === 0) {
-      original.style.width = `${viewportWidth}px`;
-      original.style.justifyContent = 'space-around';
-    }
-
-    state.viewport.classList.toggle('is-overflowing', travelDistance > 1);
-    state.track.style.setProperty('--marquee-distance', `${-travelDistance}px`);
-    state.track.style.setProperty('--marquee-duration', `${Math.max(8, travelDistance / 24)}s`);
-    state.width = viewportWidth;
+    state.gap = Math.max(defaultGap, minimumGap);
+    state.list.style.gap = `${state.gap}px`;
+    const lastStart = state.padding +
+      state.widths.slice(0, -1).reduce((total, width) => total + width, 0) +
+      state.gap * (state.widths.length - 1);
+    state.offset = state.direction > 0 ? viewportWidth - lastStart : 0;
+    state.track.style.transform = `translate3d(${state.offset}px, 0, 0)`;
+    state.viewport.classList.add('is-overflowing');
   });
 };
 
-const marqueeResizeObserver = new ResizeObserver(() => requestAnimationFrame(updateMarquees));
-marqueeStates.forEach(({ viewport }) => marqueeResizeObserver.observe(viewport));
-window.addEventListener('load', updateMarquees, { once: true });
-updateMarquees();
+let previousMarqueeFrame = 0;
+
+const animateMarquees = timestamp => {
+  const elapsed = previousMarqueeFrame
+    ? Math.min((timestamp - previousMarqueeFrame) / 1000, 0.05)
+    : 0;
+  previousMarqueeFrame = timestamp;
+
+  if (!reducedMotion && !document.hidden) {
+    marqueeStates.forEach(state => {
+      if (skillsLayout?.classList.contains('marquees-paused') || state.hovered || !state.viewportWidth) return;
+
+      state.offset += state.direction * marqueeSpeed * elapsed;
+
+      if (state.direction < 0) {
+        const firstWidth = state.widths[0];
+        if (state.offset <= -(state.padding + firstWidth)) {
+          state.items.push(state.items.shift());
+          state.widths.push(state.widths.shift());
+          state.list.append(state.items[state.items.length - 1]);
+          state.offset += firstWidth + state.gap;
+        }
+      } else {
+        const lastIndex = state.widths.length - 1;
+        const lastStart = state.padding +
+          state.widths.slice(0, lastIndex).reduce((total, width) => total + width, 0) +
+          state.gap * lastIndex;
+        if (state.offset > state.viewportWidth - lastStart) {
+          const lastWidth = state.widths.pop();
+          state.widths.unshift(lastWidth);
+          state.items.unshift(state.items.pop());
+          state.list.prepend(state.items[0]);
+          state.offset -= lastWidth + state.gap;
+        }
+      }
+
+      state.track.style.transform = `translate3d(${state.offset}px, 0, 0)`;
+    });
+  }
+
+  requestAnimationFrame(animateMarquees);
+};
+
+if (marqueeStates.length) {
+  const marqueeResizeObserver = new ResizeObserver(() => requestAnimationFrame(updateMarquees));
+  marqueeStates.forEach(({ viewport }) => marqueeResizeObserver.observe(viewport));
+  window.addEventListener('load', updateMarquees, { once: true });
+  document.addEventListener('visibilitychange', () => { previousMarqueeFrame = 0; });
+  updateMarquees();
+  requestAnimationFrame(animateMarquees);
+}
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const revealTargets = document.querySelectorAll(
