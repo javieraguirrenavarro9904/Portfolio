@@ -59,6 +59,14 @@ if (githubProjects && githubStatus) {
         const card = document.createElement('article');
         card.className = 'project-card';
 
+        const cover = document.createElement('img');
+        cover.className = 'project-card-cover';
+        cover.src = `images/projects/${encodeURIComponent(repository.name)}.jpg`;
+        cover.alt = `Portada del proyecto ${repository.name}`;
+        cover.loading = 'lazy';
+        cover.decoding = 'async';
+        cover.addEventListener('error', () => cover.remove(), { once: true });
+
         const title = document.createElement('h3');
         const repositoryLink = document.createElement('a');
         repositoryLink.href = repository.html_url;
@@ -92,7 +100,7 @@ if (githubProjects && githubStatus) {
         link.textContent = 'Ver código';
         link.setAttribute('aria-label', `Ver el código de ${repository.name} en GitHub`);
 
-        card.append(title, description, details, link);
+        card.append(cover, title, description, details, link);
         return card;
       });
 
