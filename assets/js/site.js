@@ -1,3 +1,5 @@
+import { getTechnologyIcon } from '../../src/technology-catalog.js';
+
 const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.nav-menu');
 
@@ -55,8 +57,46 @@ if (githubProjects && githubStatus) {
         return;
       }
 
+      const languageResults = await Promise.all(ownRepositories.map(async repository => {
+        try {
+          const languageResponse = await fetch(repository.languages_url, {
+            headers: { Accept: 'application/vnd.github+json' }
+          });
+
+          if (!languageResponse.ok) {
+            throw new Error(`GitHub respondió con el estado ${languageResponse.status}.`);
+          }
+
+          const languages = await languageResponse.json();
+          if (!languages || typeof languages !== 'object' || Array.isArray(languages)) {
+            throw new Error('La respuesta de GitHub no contiene un mapa de lenguajes.');
+          }
+
+          const entries = Object.entries(languages)
+            .filter(([, bytes]) => typeof bytes === 'number' && bytes > 0)
+            .sort((first, second) => second[1] - first[1]);
+          const totalBytes = entries.reduce((total, [, bytes]) => total + bytes, 0);
+
+          return {
+            languages: entries.map(([name, bytes]) => ({
+              name,
+              percentage: Math.round((bytes / totalBytes) * 100)
+            })),
+            failed: false
+          };
+        } catch (error) {
+          console.error(`Error al cargar los lenguajes de ${repository.name}:`, error);
+          return {
+            languages: repository.language
+              ? [{ name: repository.language, percentage: null }]
+              : [],
+            failed: true
+          };
+        }
+      }));
+
       const dateFormatter = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' });
-      const cards = ownRepositories.map(repository => {
+      const cards = ownRepositories.map((repository, index) => {
         const card = document.createElement('article');
         card.className = 'project-card';
 
@@ -80,13 +120,51 @@ if (githubProjects && githubStatus) {
         description.className = 'project-card-description';
         description.textContent = repository.description || 'Repositorio público de GitHub sin descripción.';
 
+        const projectLanguages = document.createElement('div');
+        projectLanguages.className = 'project-tech-grid';
+        projectLanguages.setAttribute('role', 'list');
+        projectLanguages.setAttribute('aria-label', `Lenguajes utilizados en ${repository.name}`);
+
+        languageResults[index].languages.forEach(({ name, percentage }) => {
+          const technology = document.createElement('span');
+          technology.className = 'stack-chip project-tech-chip';
+          technology.setAttribute('role', 'listitem');
+
+          const iconUrl = getTechnologyIcon(name);
+          if (iconUrl) {
+            const icon = document.createElement('img');
+            icon.src = iconUrl;
+            icon.alt = '';
+            icon.setAttribute('aria-hidden', 'true');
+            icon.loading = 'lazy';
+            icon.addEventListener('error', () => icon.remove(), { once: true });
+            technology.append(icon);
+          }
+
+          const label = document.createElement('span');
+          label.textContent = name;
+          technology.append(label);
+
+          if (percentage !== null) {
+            const share = document.createElement('small');
+            share.className = 'project-tech-share';
+            share.textContent = `${percentage}%`;
+            technology.title = `${name}: ${percentage}% del código detectado por GitHub`;
+            technology.append(share);
+          }
+
+          projectLanguages.append(technology);
+        });
+
+        if (languageResults[index].languages.length === 0) {
+          const noLanguages = document.createElement('p');
+          noLanguages.className = 'project-tech-empty';
+          noLanguages.textContent = 'GitHub no ha informado lenguajes para este repositorio.';
+          projectLanguages.append(noLanguages);
+        }
+
         const details = document.createElement('div');
         details.className = 'project-card-details';
-
-        const language = document.createElement('span');
-        language.className = 'project-language';
-        language.textContent = repository.language || 'Lenguaje no especificado';
-        details.append(language);
 
         if (repository.stargazers_count > 0) {
           const stars = document.createElement('span');
@@ -109,12 +187,16 @@ if (githubProjects && githubStatus) {
         link.textContent = 'Ver código en GitHub';
         link.setAttribute('aria-label', `Ver el código de ${repository.name} en GitHub`);
 
-        card.append(cover, title, description, details, link);
+        card.append(cover, title, description, projectLanguages, details, link);
         return card;
       });
 
       githubProjects.replaceChildren(...cards);
-      githubStatus.textContent = `${ownRepositories.length} ${ownRepositories.length === 1 ? 'proyecto público' : 'proyectos públicos'} cargados desde GitHub.`;
+      const failedLanguageRequests = languageResults.filter(result => result.failed).length;
+      const loadedText = `${ownRepositories.length} ${ownRepositories.length === 1 ? 'proyecto público' : 'proyectos públicos'} cargados desde GitHub.`;
+      githubStatus.textContent = failedLanguageRequests
+        ? `${loadedText} No se pudieron consultar los lenguajes de ${failedLanguageRequests} ${failedLanguageRequests === 1 ? 'proyecto' : 'proyectos'}.`
+        : loadedText;
     } catch (error) {
       githubStatus.textContent = 'No se pudieron cargar los proyectos de GitHub. Puedes verlos directamente en mi perfil.';
       console.error('Error al cargar los repositorios públicos de GitHub:', error);

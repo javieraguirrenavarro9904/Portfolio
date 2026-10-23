@@ -209,8 +209,12 @@ h1 span { color: #c3c8b9; }
 .project-card h3 { margin: 0 20px; font-size: 17px; font-weight: 620; letter-spacing: -.025em; overflow-wrap: anywhere; }
 .project-card h3 a:hover { color: var(--accent); }
 .project-card-description { flex: 1; margin: 9px 20px 18px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.project-tech-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 20px 17px; }
+.project-tech-chip { min-height: 36px; padding: 6px 9px; font-size: 11px; }
+.project-tech-chip img { width: 20px; height: 20px; }
+.project-tech-share { color: var(--quiet); font-size: 10px; }
+.project-tech-empty { margin: 0; color: var(--quiet); font-size: 12px; }
 .project-card-details { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-inline: 20px; color: var(--quiet); font-size: 11px; }
-.project-language { padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
 .project-card-link { align-self: flex-start; margin: 18px 20px 20px; color: var(--accent); font-size: 12px; font-weight: 650; }
 .project-card-link:hover { color: #e1edc9; }
 .service-visual, .project-visual { min-height: 250px; margin-bottom: 28px; }
