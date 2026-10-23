@@ -47,18 +47,35 @@ export const stacks = {
   }
 };
 
-const githubLanguageAliases = {
-  html: 'HTML5',
-  css: 'CSS3',
-  dockerfile: 'Docker'
+export const projectTechnologies = {
+  'Portfolio': [],
+  'Oficina-Turismo-Italia': [],
+  'FCT-v1': ['Preact', 'Node.js', 'Express', 'Socket.IO', 'MySQL']
 };
 
-const technologyIcons = new Map(
-  Object.values(stacks).flatMap(stack => stack.technologies)
-);
+const additionalTechnologyIcons = [
+  ['Preact', 'https://cdn.simpleicons.org/preact/673AB8'],
+  ['Express', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg'],
+  ['Socket.IO', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg']
+];
 
-export const getTechnologyIcon = language => {
-  const key = language.toLowerCase();
-  const technologyName = githubLanguageAliases[key] || language;
-  return technologyIcons.get(technologyName) || '';
+const technologyNames = new Map([
+  ...Object.values(stacks).flatMap(stack => stack.technologies),
+  ...additionalTechnologyIcons
+].map(([name, icon]) => [name.toLowerCase(), { name, icon }]));
+
+const githubLanguageAliases = new Map([
+  ['html', 'HTML5'],
+  ['css', 'CSS3'],
+  ['dockerfile', 'Docker']
+]);
+
+export const getTechnologyName = technology => {
+  const normalizedName = githubLanguageAliases.get(technology.toLowerCase()) || technology;
+  return technologyNames.get(normalizedName.toLowerCase())?.name || normalizedName;
+};
+
+export const getTechnologyIcon = technology => {
+  const normalizedName = getTechnologyName(technology);
+  return technologyNames.get(normalizedName.toLowerCase())?.icon || '';
 };

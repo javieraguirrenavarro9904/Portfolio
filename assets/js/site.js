@@ -1,4 +1,8 @@
-import { getTechnologyIcon } from '../../src/technology-catalog.js';
+import {
+  getTechnologyIcon,
+  getTechnologyName,
+  projectTechnologies
+} from '../../src/technology-catalog.js';
 
 const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.nav-menu');
@@ -79,7 +83,7 @@ if (githubProjects && githubStatus) {
 
           return {
             languages: entries.map(([name, bytes]) => ({
-              name,
+              name: getTechnologyName(name),
               percentage: Math.round((bytes / totalBytes) * 100)
             })),
             failed: false
@@ -123,9 +127,23 @@ if (githubProjects && githubStatus) {
         const projectLanguages = document.createElement('div');
         projectLanguages.className = 'project-tech-grid';
         projectLanguages.setAttribute('role', 'list');
-        projectLanguages.setAttribute('aria-label', `Lenguajes utilizados en ${repository.name}`);
+        projectLanguages.setAttribute('aria-label', `Tecnologías utilizadas en ${repository.name}`);
 
-        languageResults[index].languages.forEach(({ name, percentage }) => {
+        const seenTechnologies = new Set();
+        const technologies = [
+          ...languageResults[index].languages,
+          ...(projectTechnologies[repository.name] || []).map(name => ({
+            name: getTechnologyName(name),
+            percentage: null
+          }))
+        ].filter(technology => {
+          const key = technology.name.toLowerCase();
+          if (seenTechnologies.has(key)) return false;
+          seenTechnologies.add(key);
+          return true;
+        });
+
+        technologies.forEach(({ name, percentage }) => {
           const technology = document.createElement('span');
           technology.className = 'stack-chip project-tech-chip';
           technology.setAttribute('role', 'listitem');
@@ -156,10 +174,10 @@ if (githubProjects && githubStatus) {
           projectLanguages.append(technology);
         });
 
-        if (languageResults[index].languages.length === 0) {
+        if (technologies.length === 0) {
           const noLanguages = document.createElement('p');
           noLanguages.className = 'project-tech-empty';
-          noLanguages.textContent = 'GitHub no ha informado lenguajes para este repositorio.';
+          noLanguages.textContent = 'Añade tecnologías manuales en technology-catalog.js para este proyecto.';
           projectLanguages.append(noLanguages);
         }
 
@@ -377,7 +395,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 const revealTargets = document.querySelectorAll(
   '.hero-copy, .intro-card, .home-next-grid > div, .showcase-image, .showcase-copy, .home-link-card, ' +
   '.page-heading .wrap > *, .service-visual, .project-visual, ' +
-  '.skill-group, .simple-card, .service-card, .process-item, .prose > *, .timeline-item, ' +
+  '.skill-group, .simple-card, .service-card, .process-item, .prose > *, .timeline-item, .experience-timeline-item, ' +
   '.note-box, .project-note, .experience-card, .contact-form, .contact-detail'
 );
 
