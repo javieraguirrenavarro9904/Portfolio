@@ -57,6 +57,7 @@ if (githubProjects && githubStatus) {
       const ownRepositories = repositories.filter(repository => !repository.fork);
 
       if (ownRepositories.length === 0) {
+        githubProjects.replaceChildren();
         githubStatus.textContent = 'Todavía no hay repositorios públicos para mostrar.';
         return;
       }
@@ -132,6 +133,7 @@ if (githubProjects && githubStatus) {
         const seenTechnologies = new Set();
         const technologies = [
           ...languageResults[index].languages,
+          { name: getTechnologyName('GitHub'), percentage: null },
           ...(projectTechnologies[repository.name] || []).map(name => ({
             name: getTechnologyName(name),
             percentage: null
@@ -216,6 +218,7 @@ if (githubProjects && githubStatus) {
         ? `${loadedText} No se pudieron consultar los lenguajes de ${failedLanguageRequests} ${failedLanguageRequests === 1 ? 'proyecto' : 'proyectos'}.`
         : loadedText;
     } catch (error) {
+      githubProjects.replaceChildren();
       githubStatus.textContent = 'No se pudieron cargar los proyectos de GitHub. Puedes verlos directamente en mi perfil.';
       console.error('Error al cargar los repositorios públicos de GitHub:', error);
     } finally {
