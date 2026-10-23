@@ -66,7 +66,6 @@ function StackExplorer() {
           <h2 id="react-explorer-title">Explora mi stack</h2>
           <p>Elige una categoría y descubre las herramientas que aparecen en mi recorrido.</p>
         </div>
-        <span className="react-badge"><span aria-hidden="true">⚛</span> Hecho con React</span>
       </div>
       <div className="stack-tabs" role="group" aria-label="Categorías de tecnologías">
         {Object.entries(stacks).map(([key, stack]) => (
