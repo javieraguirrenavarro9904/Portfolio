@@ -105,7 +105,7 @@ if (githubProjects && githubStatus) {
         card.className = 'project-card';
 
         const cover = document.createElement('img');
-        cover.className = 'project-card-cover';
+        cover.className = `project-card-cover${repository.name === 'FCT-v1' ? ' project-card-cover-fct' : ''}`;
         cover.src = `images/projects/${encodeURIComponent(repository.name)}.jpg`;
         cover.alt = `Portada del proyecto ${repository.name}`;
         cover.loading = 'lazy';

@@ -8,6 +8,8 @@ export const stacks = {
       ['JavaScript', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'],
       ['TypeScript', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg'],
       ['React', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'],
+      ['Preact', 'https://cdn.simpleicons.org/preact/673AB8'],
+      ['Next.js', 'https://cdn.simpleicons.org/nextdotjs/F0F6FC'],
       ['Astro', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg'],
       ['Angular', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg']
     ]
@@ -19,7 +21,9 @@ export const stacks = {
       ['PHP', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg'],
       ['Laravel', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg'],
       ['Java', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg'],
-      ['Node.js', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg']
+      ['Node.js', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg'],
+      ['Express', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg'],
+      ['Socket.IO', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg']
     ]
   },
   datos: {
@@ -53,15 +57,8 @@ export const projectTechnologies = {
   'FCT-v1': ['Preact', 'Node.js', 'Express', 'Socket.IO', 'MySQL']
 };
 
-const additionalTechnologyIcons = [
-  ['Preact', 'https://cdn.simpleicons.org/preact/673AB8'],
-  ['Express', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg'],
-  ['Socket.IO', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg']
-];
-
 const technologyNames = new Map([
-  ...Object.values(stacks).flatMap(stack => stack.technologies),
-  ...additionalTechnologyIcons
+  ...Object.values(stacks).flatMap(stack => stack.technologies)
 ].map(([name, icon]) => [name.toLowerCase(), { name, icon }]));
 
 const githubLanguageAliases = new Map([

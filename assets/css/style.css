@@ -313,6 +313,7 @@ body.has-custom-cursor input, body.has-custom-cursor textarea { cursor: text; }
   .experience-timeline { padding-left: 24px; }
   .experience-timeline-item::before { left: -23px; }
   .project-card-cover { height: auto; aspect-ratio: 16 / 9; }
+  .project-card-cover-fct { object-fit: contain; background: #10120f; }
   .service-visual, .project-visual { min-height: 0; aspect-ratio: 16 / 9; }
   .service-visual img, .project-visual img { object-fit: cover; }
   .button-row { align-items: stretch; }
@@ -330,6 +331,7 @@ body.has-custom-cursor input, body.has-custom-cursor textarea { cursor: text; }
   .service-visual figcaption span:last-child { display: none; }
   .project-section-heading { align-items: flex-start; flex-direction: column; }
   .project-card-cover { height: 200px; }
+  .project-card-cover-fct { height: auto; aspect-ratio: 16 / 9; }
   .back-to-top { right: 14px; bottom: 14px; width: 40px; height: 40px; }
   .react-explorer-heading { flex-direction: column; }
   .react-badge { align-self: flex-start; }
