@@ -31,6 +31,7 @@ const githubStatus = document.querySelector('[data-github-status]');
 if (githubProjects && githubStatus) {
   const githubUsername = 'javieraguirrenavarro9904';
   const projectsUrl = `https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=pushed`;
+  githubProjects.setAttribute('aria-busy', 'true');
 
   const loadGithubProjects = async () => {
     try {
@@ -83,8 +84,16 @@ if (githubProjects && githubStatus) {
         details.className = 'project-card-details';
 
         const language = document.createElement('span');
+        language.className = 'project-language';
         language.textContent = repository.language || 'Lenguaje no especificado';
         details.append(language);
+
+        if (repository.stargazers_count > 0) {
+          const stars = document.createElement('span');
+          stars.textContent = `★ ${repository.stargazers_count.toLocaleString('es-ES')}`;
+          stars.setAttribute('aria-label', `${repository.stargazers_count} estrellas en GitHub`);
+          details.append(stars);
+        }
 
         if (repository.pushed_at) {
           const updated = document.createElement('span');
@@ -97,7 +106,7 @@ if (githubProjects && githubStatus) {
         link.href = repository.html_url;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
-        link.textContent = 'Ver código';
+        link.textContent = 'Ver código en GitHub';
         link.setAttribute('aria-label', `Ver el código de ${repository.name} en GitHub`);
 
         card.append(cover, title, description, details, link);
@@ -109,6 +118,8 @@ if (githubProjects && githubStatus) {
     } catch (error) {
       githubStatus.textContent = 'No se pudieron cargar los proyectos de GitHub. Puedes verlos directamente en mi perfil.';
       console.error('Error al cargar los repositorios públicos de GitHub:', error);
+    } finally {
+      githubProjects.setAttribute('aria-busy', 'false');
     }
   };
 
@@ -117,8 +128,32 @@ if (githubProjects && githubStatus) {
 
 const scrollProgress = document.createElement('div');
 scrollProgress.className = 'scroll-progress';
-scrollProgress.setAttribute('aria-hidden', 'true');
+scrollProgress.setAttribute('role', 'progressbar');
+scrollProgress.setAttribute('aria-label', 'Progreso de lectura');
+scrollProgress.setAttribute('aria-valuemin', '0');
+scrollProgress.setAttribute('aria-valuemax', '100');
+scrollProgress.setAttribute('aria-valuenow', '0');
+
+const scrollProgressCode = document.createElement('span');
+scrollProgressCode.className = 'scroll-progress-code';
+scrollProgressCode.setAttribute('aria-hidden', 'true');
+const scrollProgressCodeActive = document.createElement('span');
+scrollProgressCodeActive.className = 'scroll-progress-code-active';
+scrollProgressCodeActive.setAttribute('aria-hidden', 'true');
+const scrollProgressCursor = document.createElement('span');
+scrollProgressCursor.className = 'scroll-progress-cursor';
+scrollProgressCursor.setAttribute('aria-hidden', 'true');
+scrollProgress.append(scrollProgressCode, scrollProgressCodeActive, scrollProgressCursor);
 document.body.append(scrollProgress);
+
+const updateScrollTrace = () => {
+  const prompt = 'javier@portfolio:~$ ';
+  const command = 'scroll --trace ';
+  const characterCount = Math.ceil(window.innerWidth / 6) - prompt.length - command.length;
+  const trace = `${prompt}${command}${'─'.repeat(Math.max(characterCount, 0))}`;
+  scrollProgressCode.textContent = trace;
+  scrollProgressCodeActive.textContent = trace;
+};
 
 const backToTop = document.createElement('button');
 backToTop.className = 'back-to-top';
@@ -130,8 +165,15 @@ document.body.append(backToTop);
 let scrollUpdateScheduled = false;
 const updateScrollEffects = () => {
   const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
-  scrollProgress.style.transform = `scaleX(${progress})`;
+  const progress = scrollableHeight > 0
+    ? Math.min(Math.max(window.scrollY / scrollableHeight, 0), 1)
+    : 0;
+  scrollProgress.style.setProperty('--scroll-progress', `${progress * 100}%`);
+  scrollProgress.style.setProperty(
+    '--scroll-cursor-position',
+    `${10 + progress * Math.max(window.innerWidth - 20, 0)}px`
+  );
+  scrollProgress.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
   backToTop.classList.toggle('is-visible', window.scrollY > 450);
   scrollUpdateScheduled = false;
 };
@@ -141,8 +183,12 @@ window.addEventListener('scroll', () => {
   scrollUpdateScheduled = true;
   window.requestAnimationFrame(updateScrollEffects);
 }, { passive: true });
-window.addEventListener('resize', updateScrollEffects, { passive: true });
+window.addEventListener('resize', () => {
+  updateScrollTrace();
+  updateScrollEffects();
+}, { passive: true });
 backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+updateScrollTrace();
 updateScrollEffects();
 
 const marqueeToggle = document.querySelector('#marquee-toggle');
