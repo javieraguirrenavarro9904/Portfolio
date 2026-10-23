@@ -197,7 +197,18 @@ h1 span { color: #c3c8b9; }
 .language-row:last-child { border: 0; padding-bottom: 0; }
 .language-row span:last-child { color: var(--muted); }
 
-.project-note { max-width: 750px; padding: 26px; border-left: 2px solid var(--accent); background: var(--surface-soft); }
+.project-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.project-section-heading .section-title { margin: 8px 0 0; }
+.project-source-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+.project-status { margin: 20px 0 0; color: var(--quiet); font-size: 13px; }
+.project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.project-card { display: flex; min-height: 205px; flex-direction: column; padding: 21px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface-soft); }
+.project-card h3 { margin: 0; font-size: 17px; font-weight: 620; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.project-card h3 a:hover { color: var(--accent); }
+.project-card-description { flex: 1; margin: 10px 0 18px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.project-card-details { display: flex; flex-wrap: wrap; gap: 8px 15px; color: var(--quiet); font-size: 11px; }
+.project-card-link { align-self: flex-start; margin-top: 16px; color: var(--accent); font-size: 12px; font-weight: 600; }
+.project-card-link:hover { color: #e1edc9; }
 .service-visual, .project-visual { min-height: 250px; margin-bottom: 28px; }
 .service-visual img, .project-visual img { position: absolute; inset: 0; }
 .service-visual figcaption, .project-visual figcaption { position: absolute; z-index: 1; right: 22px; bottom: 20px; left: 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; color: #fff; font-size: 11px; font-weight: 650; letter-spacing: .13em; }
@@ -272,7 +283,7 @@ body.has-custom-cursor input, body.has-custom-cursor textarea { cursor: text; }
 @media (max-width: 520px) {
   h1 { font-size: clamp(39px, 12vw, 54px); }
   .intro { font-size: 15px; }
-  .card-grid, .skills-layout, .experience-list { grid-template-columns: 1fr; }
+  .card-grid, .skills-layout, .experience-list, .project-grid { grid-template-columns: 1fr; }
   .service-card, .skill-group { padding: 20px; }
   .process { grid-template-columns: 1fr; gap: 19px; }
   .footer-inner { min-height: 74px; flex-direction: column; justify-content: center; gap: 5px; }
@@ -280,6 +291,7 @@ body.has-custom-cursor input, body.has-custom-cursor textarea { cursor: text; }
   .service-visual, .project-visual { min-height: 200px; }
   .service-visual figcaption, .project-visual figcaption { right: 14px; bottom: 14px; left: 14px; font-size: 9px; }
   .service-visual figcaption span:last-child { display: none; }
+  .project-section-heading { align-items: flex-start; flex-direction: column; }
   .back-to-top { right: 14px; bottom: 14px; width: 40px; height: 40px; }
   .react-explorer-heading { flex-direction: column; }
   .react-badge { align-self: flex-start; }

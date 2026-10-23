@@ -25,6 +25,88 @@ document.querySelectorAll('[data-year]').forEach(element => {
   element.textContent = new Date().getFullYear();
 });
 
+const githubProjects = document.querySelector('[data-github-projects]');
+const githubStatus = document.querySelector('[data-github-status]');
+
+if (githubProjects && githubStatus) {
+  const githubUsername = 'javieraguirrenavarro9904';
+  const projectsUrl = `https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=pushed`;
+
+  const loadGithubProjects = async () => {
+    try {
+      const response = await fetch(projectsUrl, {
+        headers: { Accept: 'application/vnd.github+json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`GitHub respondió con el estado ${response.status}.`);
+      }
+
+      const repositories = await response.json();
+      if (!Array.isArray(repositories)) {
+        throw new Error('La respuesta de GitHub no contiene una lista de repositorios.');
+      }
+
+      const ownRepositories = repositories.filter(repository => !repository.fork);
+
+      if (ownRepositories.length === 0) {
+        githubStatus.textContent = 'Todavía no hay repositorios públicos para mostrar.';
+        return;
+      }
+
+      const dateFormatter = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' });
+      const cards = ownRepositories.map(repository => {
+        const card = document.createElement('article');
+        card.className = 'project-card';
+
+        const title = document.createElement('h3');
+        const repositoryLink = document.createElement('a');
+        repositoryLink.href = repository.html_url;
+        repositoryLink.target = '_blank';
+        repositoryLink.rel = 'noopener noreferrer';
+        repositoryLink.textContent = repository.name;
+        title.append(repositoryLink);
+
+        const description = document.createElement('p');
+        description.className = 'project-card-description';
+        description.textContent = repository.description || 'Repositorio público de GitHub sin descripción.';
+
+        const details = document.createElement('div');
+        details.className = 'project-card-details';
+
+        const language = document.createElement('span');
+        language.textContent = repository.language || 'Lenguaje no especificado';
+        details.append(language);
+
+        if (repository.pushed_at) {
+          const updated = document.createElement('span');
+          updated.textContent = `Actualizado ${dateFormatter.format(new Date(repository.pushed_at))}`;
+          details.append(updated);
+        }
+
+        const link = document.createElement('a');
+        link.className = 'project-card-link';
+        link.href = repository.html_url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Ver código';
+        link.setAttribute('aria-label', `Ver el código de ${repository.name} en GitHub`);
+
+        card.append(title, description, details, link);
+        return card;
+      });
+
+      githubProjects.replaceChildren(...cards);
+      githubStatus.textContent = `${ownRepositories.length} ${ownRepositories.length === 1 ? 'proyecto público' : 'proyectos públicos'} cargados desde GitHub.`;
+    } catch (error) {
+      githubStatus.textContent = 'No se pudieron cargar los proyectos de GitHub. Puedes verlos directamente en mi perfil.';
+      console.error('Error al cargar los repositorios públicos de GitHub:', error);
+    }
+  };
+
+  loadGithubProjects();
+}
+
 const scrollProgress = document.createElement('div');
 scrollProgress.className = 'scroll-progress';
 scrollProgress.setAttribute('aria-hidden', 'true');
