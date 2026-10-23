@@ -134,26 +134,18 @@ scrollProgress.setAttribute('aria-valuemin', '0');
 scrollProgress.setAttribute('aria-valuemax', '100');
 scrollProgress.setAttribute('aria-valuenow', '0');
 
-const scrollProgressCode = document.createElement('span');
-scrollProgressCode.className = 'scroll-progress-code';
-scrollProgressCode.setAttribute('aria-hidden', 'true');
-const scrollProgressCodeActive = document.createElement('span');
-scrollProgressCodeActive.className = 'scroll-progress-code-active';
-scrollProgressCodeActive.setAttribute('aria-hidden', 'true');
-const scrollProgressCursor = document.createElement('span');
-scrollProgressCursor.className = 'scroll-progress-cursor';
-scrollProgressCursor.setAttribute('aria-hidden', 'true');
-scrollProgress.append(scrollProgressCode, scrollProgressCodeActive, scrollProgressCursor);
+const scrollProgressTrack = document.createElement('span');
+scrollProgressTrack.className = 'scroll-progress-track';
+scrollProgressTrack.setAttribute('aria-hidden', 'true');
+const scrollProgressFill = document.createElement('span');
+scrollProgressFill.className = 'scroll-progress-fill';
+scrollProgressFill.setAttribute('aria-hidden', 'true');
+const scrollProgressRocket = document.createElement('span');
+scrollProgressRocket.className = 'scroll-progress-rocket';
+scrollProgressRocket.setAttribute('aria-hidden', 'true');
+scrollProgressRocket.textContent = '🚀';
+scrollProgress.append(scrollProgressTrack, scrollProgressFill, scrollProgressRocket);
 document.body.append(scrollProgress);
-
-const updateScrollTrace = () => {
-  const prompt = 'javier@portfolio:~$ ';
-  const command = 'scroll --trace ';
-  const characterCount = Math.ceil(window.innerWidth / 6) - prompt.length - command.length;
-  const trace = `${prompt}${command}${'─'.repeat(Math.max(characterCount, 0))}`;
-  scrollProgressCode.textContent = trace;
-  scrollProgressCodeActive.textContent = trace;
-};
 
 const backToTop = document.createElement('button');
 backToTop.className = 'back-to-top';
@@ -169,10 +161,6 @@ const updateScrollEffects = () => {
     ? Math.min(Math.max(window.scrollY / scrollableHeight, 0), 1)
     : 0;
   scrollProgress.style.setProperty('--scroll-progress', `${progress * 100}%`);
-  scrollProgress.style.setProperty(
-    '--scroll-cursor-position',
-    `${10 + progress * Math.max(window.innerWidth - 20, 0)}px`
-  );
   scrollProgress.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
   backToTop.classList.toggle('is-visible', window.scrollY > 450);
   scrollUpdateScheduled = false;
@@ -184,11 +172,9 @@ window.addEventListener('scroll', () => {
   window.requestAnimationFrame(updateScrollEffects);
 }, { passive: true });
 window.addEventListener('resize', () => {
-  updateScrollTrace();
   updateScrollEffects();
 }, { passive: true });
 backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-updateScrollTrace();
 updateScrollEffects();
 
 const marqueeToggle = document.querySelector('#marquee-toggle');
